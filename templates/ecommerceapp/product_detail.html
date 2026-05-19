@@ -1,0 +1,56 @@
+{% extends 'ecommerceapp/base.html' %}
+
+{% block content %}
+<section class="product-detail-grid">
+    <div class="detail-media">
+        {% if product.image %}
+            <img src="{{ product.image.url }}" alt="{{ product.name }}">
+        {% else %}
+            <div class="image-fallback detail-fallback">{{ product.name|slice:':1' }}</div>
+        {% endif %}
+    </div>
+    <div class="detail-info">
+        <span class="section-label">Product Details</span>
+        <h1>{{ product.name }}</h1>
+        <p class="product-category">Category: <a href="#category-{{ product.category.slug }}">{{ product.category.name }}</a></p>
+        <p class="product-price">Rs {{ product.price }}</p>
+        <div class="product-description">
+            {{ product.description|linebreaks }}
+        </div>
+        <div class="buy-actions">
+            <a class="button" href="{% url 'ecommerceapp:cart_add' product.id %}"><span class="button-icon">🛒</span>Add to cart</a>
+            <a class="button secondary" href="{% url 'ecommerceapp:cart_detail' %}">View cart</a>
+        </div>
+    </div>
+</section>
+
+<section class="related-products">
+    <div class="section-header">
+        <span>Related</span>
+        <h2>More from {{ product.category.name }}</h2>
+    </div>
+    {% if related_products %}
+        <div class="product-grid">
+            {% for item in related_products %}
+                <article class="product-card">
+                    <div class="product-image">
+                        {% if item.image %}
+                            <img src="{{ item.image.url }}" alt="{{ item.name }}">
+                        {% else %}
+                            <div class="image-fallback">{{ item.name|slice:':1' }}</div>
+                        {% endif %}
+                    </div>
+                    <h3><a href="{{ item.get_absolute_url }}">{{ item.name }}</a></h3>
+                    <p>{{ item.description|truncatewords:18 }}</p>
+                    <div class="product-meta">
+                        <span class="price">Rs {{ item.price }}</span>
+                        <a class="button" href="{% url 'ecommerceapp:cart_add' item.id %}"><span class="button-icon">🛒</span>Add to cart</a>
+                    </div>
+                </article>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="related-empty">No additional products found in this category.</p>
+    {% endif %}
+</section>
+{% endblock %}

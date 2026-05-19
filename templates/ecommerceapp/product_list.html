@@ -1,0 +1,132 @@
+{% extends 'ecommerceapp/base.html' %}
+
+{% block content %}
+<section class="hero-section">
+    <div class="hero-slider">
+        <div class="slide slide-1 active">
+            <div class="slide-copy">
+                <span>Modern essentials</span>
+                <h1>Elevate your wardrobe with premium picks</h1>
+                <p>Discover the latest arrivals curated for style, comfort, and effortless confidence.</p>
+                <a class="button" href="#featured-products">Shop latest</a>
+            </div>
+        </div>
+        <div class="slide slide-2">
+            <div class="slide-copy">
+                <span>Curated collections</span>
+                <h1>Shop in-demand categories with ease</h1>
+                <p>Everything you need, organized by category for fast browsing and smarter purchases.</p>
+                <a class="button" href="#categories">Explore categories</a>
+            </div>
+        </div>
+        <div class="slide slide-3">
+            <div class="slide-copy">
+                <span>Fast checkout</span>
+                <h1>Secure ordering for every customer</h1>
+                <p>Login, add your favorites, and complete your purchase with confidence.</p>
+                <a class="button" href="{% url 'ecommerceapp:login' %}">Login now</a>
+            </div>
+        </div>
+    </div>
+    <div class="slider-nav">
+        <button class="nav-dot active" data-slide="0"></button>
+        <button class="nav-dot" data-slide="1"></button>
+        <button class="nav-dot" data-slide="2"></button>
+    </div>
+</section>
+
+<section class="categories-section" id="categories">
+    <div class="section-header">
+        <span>Categories</span>
+        <h2>Browse by category</h2>
+    </div>
+    <div class="category-grid">
+        {% for panel in category_panels %}
+            <article class="category-card">
+                <h3>{{ panel.category.name }}</h3>
+                <p>Top picks from this category.</p>
+                <a href="#category-{{ panel.category.slug }}">View products</a>
+            </article>
+        {% endfor %}
+    </div>
+</section>
+
+<section class="featured-section" id="featured-products">
+    <div class="section-header">
+        <span>Featured</span>
+        <h2>Latest arrivals</h2>
+    </div>
+    <div class="product-grid">
+        {% for product in featured_products %}
+            <article class="product-card">
+                <div class="product-image large">
+                    {% if product.image %}
+                        <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                    {% else %}
+                        <div class="image-fallback">{{ product.name|slice:':1' }}</div>
+                    {% endif %}
+                </div>
+                <h3><a href="{{ product.get_absolute_url }}">{{ product.name }}</a></h3>
+                <p>{{ product.description|truncatewords:16 }}</p>
+                <div class="product-meta">
+                    <span class="price">Rs {{ product.price }}</span>
+                    <a class="button" href="{% url 'ecommerceapp:cart_add' product.id %}"><span class="button-icon">🛒</span>Add to cart</a>
+                </div>
+            </article>
+        {% endfor %}
+    </div>
+</section>
+
+{% for panel in category_panels %}
+<section class="category-panel" id="category-{{ panel.category.slug }}">
+    <div class="section-heading">
+        <h2>{{ panel.category.name }}</h2>
+        <p>Hand-picked products from {{ panel.category.name }}.</p>
+    </div>
+    <div class="product-grid">
+        {% for product in panel.products %}
+            <article class="product-card">
+                <div class="product-image">
+                    {% if product.image %}
+                        <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                    {% else %}
+                        <div class="image-fallback">{{ product.name|slice:':1' }}</div>
+                    {% endif %}
+                </div>
+                <h3><a href="{{ product.get_absolute_url }}">{{ product.name }}</a></h3>
+                <p>{{ product.description|truncatewords:18 }}</p>
+                <div class="product-meta">
+                    <span class="price">Rs {{ product.price }}</span>
+                    <a class="button" href="{% url 'ecommerceapp:cart_add' product.id %}"><span class="button-icon">🛒</span>Add to cart</a>
+                </div>
+            </article>
+        {% endfor %}
+    </div>
+</section>
+{% endfor %}
+
+<script>
+    const slides = document.querySelectorAll('.slide');
+    const dots = document.querySelectorAll('.nav-dot');
+    let currentSlide = 0;
+    const setActiveSlide = index => {
+        slides.forEach((slide, idx) => {
+            slide.classList.toggle('active', idx === index);
+        });
+        dots.forEach((dot, idx) => {
+            dot.classList.toggle('active', idx === index);
+        });
+    };
+    const nextSlide = () => {
+        currentSlide = (currentSlide + 1) % slides.length;
+        setActiveSlide(currentSlide);
+    };
+    dots.forEach((dot, idx) => {
+        dot.addEventListener('click', () => {
+            currentSlide = idx;
+            setActiveSlide(idx);
+        });
+    });
+    setInterval(nextSlide, 6000);
+</script>
+{% endblock %}

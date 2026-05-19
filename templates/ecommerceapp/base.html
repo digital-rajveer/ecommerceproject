@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Ecommerce</title>
+    {% load static %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" integrity="sha512-NhSC1YmyruXifcj/KFRWoC561YpHpc5Jtzgvbuzx5VozKpWvQ+4nXhPdFgmx8xqexRcpAglTj9sIBWINXa8x5w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/site.css' %}">
+</head>
+<body>
+    <header class="site-header">
+        <div class="wrapper">
+            <h1><a class="brand-link" href="{% url 'ecommerceapp:product_list' %}">Premium Ecommerce</a></h1>
+            <nav>
+                <a href="{% url 'ecommerceapp:product_list' %}">Shop</a>
+                <a href="{% url 'ecommerceapp:about' %}">About</a>
+                <a href="{% url 'ecommerceapp:cart_detail' %}">Cart</a>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'ecommerceapp:order_history' %}">My Orders</a>
+                    <a href="{% url 'ecommerceapp:logout' %}">Logout</a>
+                {% else %}
+                    <a href="{% url 'ecommerceapp:login' %}">Login</a>
+                    <a href="{% url 'ecommerceapp:signup' %}">Signup</a>
+                {% endif %}
+                
+            </nav>
+        </div>
+    </header>
+
+    <main class="wrapper">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="site-footer">
+        <div class="wrapper">
+            <div>
+                <p>Elevate every experience with premium products and seamless shopping.</p>
+            </div>
+            <nav class="footer-links">
+                <a href="{% url 'ecommerceapp:about' %}">About Us</a>
+                <a href="{% url 'ecommerceapp:product_list' %}">Shop</a>
+            </nav>
+        </div>
+    </footer>
+    <script src="{% static 'bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+</body>
+</html>
+ 

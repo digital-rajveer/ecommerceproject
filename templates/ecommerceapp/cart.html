@@ -1,0 +1,118 @@
+{% extends 'ecommerceapp/base.html' %}
+
+{% block content %}
+<h2>Your Cart</h2>
+{% if cart_items %}
+    <table class="cart-table">
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Quantity</th>
+                <th>Subtotal</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in cart_items %}
+                <tr data-product-id="{{ item.product.id }}">
+                    <td><a href="{{ item.product.get_absolute_url }}">{{ item.product.name }}</a></td>
+                    <td>
+                        <div class="quantity-controls" data-product-id="{{ item.product.id }}">
+                            <button type="button" class="button secondary qty-btn qty-decrement" data-action="decrement" aria-label="Decrease quantity">−</button>
+                            <input type="number" class="quantity-input qty-input" value="{{ item.quantity }}" min="1" data-product-id="{{ item.product.id }}">
+                            <button type="button" class="button secondary qty-btn qty-increment" data-action="increment" aria-label="Increase quantity">+</button>
+                        </div>
+                    </td>
+                    <td class="item-subtotal">Rs {{ item.subtotal }}</td>
+                    <td><a class="button secondary" href="{% url 'ecommerceapp:cart_remove' item.product.id %}">Remove</a></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <p class="cart-total">Total Amount: <strong id="cart-total">Rs {{ total }}</strong></p>
+    {% if user.is_authenticated %}
+        <a class="button" href="{% url 'ecommerceapp:checkout' %}">Checkout</a>
+    {% else %}
+        <p>Please <a href="{% url 'ecommerceapp:login' %}">log in</a> to place an order.</p>
+    {% endif %}
+{% else %}
+    <p>Your cart is empty. Browse products and add something to your cart.</p>
+{% endif %}
+
+<script>
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    const csrftoken = getCookie('csrftoken');
+    const updateUrlTemplate = "{% url 'ecommerceapp:cart_update' 0 %}";
+
+    function formatMoney(value) {
+return 'Rs ' + parseFloat(value).toFixed(2);
+    }
+
+    async function updateCart(productId, quantity) {
+        if (quantity < 1) quantity = 1;
+        const url = updateUrlTemplate.replace('/0/', '/' + productId + '/');
+        const formData = new FormData();
+        formData.append('quantity', quantity);
+
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': csrftoken,
+                'X-Requested-With': 'XMLHttpRequest',
+            },
+            body: formData,
+        });
+
+        if (!response.ok) {
+            console.error('Unable to update cart');
+            return;
+        }
+
+        const data = await response.json();
+        if (!data.success) return;
+
+        const row = document.querySelector(`tr[data-product-id="${productId}"]`);
+        const input = row.querySelector('.qty-input');
+        const subtotalCell = row.querySelector('.item-subtotal');
+
+        input.value = data.quantity;
+        subtotalCell.textContent = formatMoney(data.item_subtotal);
+        document.getElementById('cart-total').textContent = formatMoney(data.total);
+    }
+
+    document.querySelectorAll('.quantity-controls').forEach((control) => {
+        const productId = control.dataset.productId;
+        const input = control.querySelector('.qty-input');
+
+        control.querySelectorAll('.qty-btn').forEach((button) => {
+            button.addEventListener('click', () => {
+                const action = button.dataset.action;
+                let quantity = parseInt(input.value, 10) || 1;
+                if (action === 'decrement') quantity = Math.max(quantity - 1, 1);
+                if (action === 'increment') quantity += 1;
+                updateCart(productId, quantity);
+            });
+        });
+
+        input.addEventListener('change', () => {
+            let quantity = parseInt(input.value, 10);
+            if (isNaN(quantity) || quantity < 1) quantity = 1;
+            updateCart(productId, quantity);
+        });
+    });
+</script>
+{% endblock %}

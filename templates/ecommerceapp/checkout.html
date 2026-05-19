@@ -1,0 +1,107 @@
+{% extends 'ecommerceapp/base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2 class="mb-0">Checkout</h2>
+            <p class="text-muted">Enter billing details and review your order before placing it.</p>
+        </div>
+    </div>
+
+
+  
+    <form method="post">
+        {% csrf_token %}
+     <div class="row">
+        <div class="col-md-6 col-lg-7">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body">
+                    <h3 class="card-title mb-4">Billing Address</h3>
+        
+                                <b>Name: </b>
+                                <input id="full_name" name="full_name" type="text" class="form-control" placeholder="Enter your full name" required>
+                             
+                         
+                       
+                    
+                                <b>Email: </b>
+                                <input id="email" name="email" type="email" class="form-control" placeholder="you@example.com" required>
+                               
+                          
+                        
+                      
+                               <b>Contact Number: </b>
+                                <input id="phone" name="phone" type="tel" class="form-control" placeholder="+91 98765 43210" required>
+                               
+                        
+                        
+                       
+                                 <b>Address: </b>
+                                <input id="address" name="address" type="text" class="form-control" placeholder="123 Main St" required>
+                            
+                                
+                                <b>City: </b>
+                                <input id="city" name="city" type="text" class="form-control" placeholder="City" required>
+                       
+                      
+                                <b>State: </b>
+                                <input id="state" name="state" type="text" class="form-control" placeholder="State" required>
+                            
+                        
+                          
+                                <b>Postal Code: </b>
+                                <input id="postal_code" name="postal_code" type="text" class="form-control" placeholder="PIN code" required>
+                              
+                        
+                       
+                                <b>Country: </b>
+                                <input id="country" name="country" type="text" class="form-control" placeholder="India" required>
+                             
+                           
+                       
+                    
+
+                    <h4 class="mt-5 mb-3">Payment mode</h4>
+                    <div class="btn-group w-100" role="group" aria-label="Payment mode">
+                        <input type="radio" class="btn-check" name="payment_mode" id="payment-online" value="online" autocomplete="off" checked>
+                        <label class="btn btn-outline-primary rounded-start" for="payment-online">Online payment</label>
+
+                        <input type="radio" class="btn-check" name="payment_mode" id="payment-offline" value="offline" autocomplete="off">
+                        <label class="btn btn-outline-primary rounded-end" for="payment-offline">Offline payment</label>
+                    </div>
+                </div>
+        </div>
+        </div>
+
+
+        <div class="col-md-6 col-lg-5">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body">
+                    <h3 class="card-title mb-4">Cart summary</h3>
+                    <div class="list-group mb-4">
+                        {% for item in cart_items %}
+                            <div class="list-group-item d-flex justify-content-between align-items-center py-3">
+                                <div>
+                                    <strong>{{ item.product.name }}</strong>
+                                    <div class="text-muted small">Qty: {{ item.quantity }}</div>
+                                </div>
+                                <div class="text-end">Rs {{ item.product.price|floatformat:2 }}</div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center mb-4 p-3 bg-light rounded-3">
+                        <span class="fw-semibold">Subtotal</span>
+                        <strong>Rs {{ total|floatformat:2 }}</strong>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-lg w-100 mt-auto">Place order</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    </form>
+    
+   
+</div>
+{% endblock %}

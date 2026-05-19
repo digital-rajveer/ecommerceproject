@@ -1,0 +1,80 @@
+{% extends 'ecommerceapp/base.html' %}
+
+{% block content %}
+<section class="about-hero">
+    <div class="hero-copy">
+        <span>About Us</span>
+        <h1>Crafting premium shopping experiences with trusted quality.</h1>
+        <p>We combine thoughtful curation, modern design, and dependable service to bring you a storefront built for style, comfort, and confidence.</p>
+        <div class="hero-actions">
+            <a class="button" href="{% url 'ecommerceapp:product_list' %}">Explore our collection</a>
+        </div>
+    </div>
+</section>
+
+<section class="feature-grid">
+    <article class="about-card">
+        <h3>Premium selection</h3>
+        <p>Every product is chosen for its value, craftsmanship, and everyday appeal so you can shop with confidence.</p>
+    </article>
+    <article class="about-card">
+        <h3>Intuitive experience</h3>
+        <p>Browse by category, quickly join the community, and checkout smoothly with an interface designed for modern convenience.</p>
+    </article>
+    <article class="about-card">
+        <h3>Trusted service</h3>
+        <p>From account signup to order history, our storefront supports every step with polished design and simple flow.</p>
+    </article>
+</section>
+
+<section class="stats-grid">
+    <article class="stat-block">
+        <strong>8+</strong>
+        <span>Years curated</span>
+    </article>
+    <article class="stat-block">
+        <strong>120+</strong>
+        <span>Premium products</span>
+    </article>
+    <article class="stat-block">
+        <strong>99%</strong>
+        <span>Customer satisfaction</span>
+    </article>
+</section>
+
+<section class="about-values">
+    <article class="about-card">
+        <span class="value-pill">Design</span>
+        <h3>Clean, modern layouts</h3>
+        <p>Our store is built to feel effortless. Every page is polished to highlight products and simplify buying decisions.</p>
+    </article>
+    <article class="about-card">
+        <span class="value-pill">Quality</span>
+        <h3>Curated inventory</h3>
+        <p>We emphasize premium picks that combine strong style with dependable performance for everyday use.</p>
+    </article>
+    <article class="about-card">
+        <span class="value-pill">Support</span>
+        <h3>Shop with confidence</h3>
+        <p>Fast checkout, order tracking, and easy account management make your experience feel smooth and reliable.</p>
+    </article>
+</section>
+
+<section class="team-grid">
+    <article class="team-member">
+        <div class="avatar">A</div>
+        <h3>Ayesha</h3>
+        <p>Lead curator focused on premium selection and elegant storefront presentation.</p>
+    </article>
+    <article class="team-member">
+        <div class="avatar">R</div>
+        <h3>Rohan</h3>
+        <p>Design lead crafting a seamless shopping journey from browse to checkout.</p>
+    </article>
+    <article class="team-member">
+        <div class="avatar">K</div>
+        <h3>Krishna</h3>
+        <p>Product strategist ensuring the collection stays fresh, modern, and easy to navigate.</p>
+    </article>
+</section>
+{% endblock %}

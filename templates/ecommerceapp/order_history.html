@@ -1,0 +1,46 @@
+{% extends 'ecommerceapp/base.html' %}
+
+{% block content %}
+<div class="container py-5">
+    <h2>My Orders</h2>
+    {% if orders %}
+        {% for order in orders %}
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h3>Order #{{ order.id }}</h3>
+                    <p>Placed on {{ order.created|date:'F j, Y, g:i a' }}</p>
+                    <p>Status: {% if order.paid %}Paid{% else %}Pending{% endif %}</p>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Quantity</th>
+                                <th>Price</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in order.items.all %}
+                                <tr>
+                                    <td>
+                                        {% if item.product %}
+                                            {{ item.product.name }}
+                                        {% else %}
+                                            Removed item
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ item.quantity }}</td>
+                                    <td>Rs {{ item.price }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    <p class="card-text">Order total: <strong>Rs {{ order.total_amount }}</strong></p>
+                    <a href="{% url 'ecommerceapp:order_invoice' order.id %}" class="btn btn-primary">View Invoice</a>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>You have not placed any orders yet.</p>
+    {% endif %}
+</div>
+{% endblock %}
